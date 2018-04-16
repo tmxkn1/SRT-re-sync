@@ -1,0 +1,85 @@
+﻿<Window x:Class="SRT_resync.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SRT_resync"
+        mc:Ignorable="d"
+        Title="SRT Re-sync" SizeToContent="WidthAndHeight" Loaded="MainWindow_OnLoaded" d:DesignHeight="600" d:DesignWidth="800" UseLayoutRounding="True">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,2"/>
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="MinWidth" Value="60"/>
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <Menu.Items>
+                <MenuItem Header="_File" Padding="10,1">
+                    <MenuItem.Items>
+                        <MenuItem Header="_Load..." Command="{Binding LoadFileCommand}"/>
+                    </MenuItem.Items>
+                </MenuItem>
+                <MenuItem Header="_About" Padding="10,1" Click="AboutMenuItem_OnClick"/>
+            </Menu.Items>
+        </Menu>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="41"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="Search:" Margin="10,10,0,10"/>
+            <ListBox Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" MinWidth="560" MinHeight="500" VerticalAlignment="Stretch" Margin="10,0,10,10" ItemsSource="{Binding FilteredDisplaySubList}" SelectedIndex="{Binding SelectedLine}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="5"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+            <Grid Grid.Row="1" Grid.Column="2">
+                <Grid.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="MinWidth" Value="60"/>
+                        <Setter Property="Margin" Value="10"/>
+                    </Style>
+                </Grid.Resources>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="SRT Time:"/>
+                <TextBlock Grid.Row="1" Text="Movie Time:"/>
+                <TextBlock Grid.Row="2" Text="Adjustment:"/>
+                <TextBox Grid.Column="1" Text="{Binding SelectedLineTime, Mode=OneWay}" IsEnabled="False"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding MovieTime, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsSubLoaded}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Width="100" Text="{Binding Adjustment, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsSubLoaded}"/>
+                <CheckBox Grid.Row="3" Grid.ColumnSpan="2" Content="Backup Before Save" Margin="10" IsChecked="{Binding IsBackupBeforeSave}"/>
+                <Button Grid.Row="4" Grid.Column="1" Content="Apply" HorizontalAlignment="Right" Command="{Binding ApplyCommand}"/>
+            </Grid>
+            <Button Grid.Column="2" Grid.Row="2" Content="Save" Command="{Binding SaveFileCommand}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+        </Grid>
+    </Grid>
+</Window>
