@@ -55,6 +55,11 @@ namespace SRT_resync
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public SubtitleModel()
+        {
+            SubList = new List<SubtitleItemExt>();
+        }
+
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

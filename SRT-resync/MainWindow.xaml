@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SRT_resync"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
         Title="SRT Re-sync" SizeToContent="WidthAndHeight" Loaded="MainWindow_OnLoaded" d:DesignHeight="600" d:DesignWidth="800" UseLayoutRounding="True">
     <Window.Resources>
@@ -44,12 +46,17 @@
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock Text="Search:" Margin="10,10,0,10"/>
-            <ListBox Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" MinWidth="560" MinHeight="500" VerticalAlignment="Stretch" Margin="10,0,10,10" ItemsSource="{Binding FilteredDisplaySubList}" SelectedIndex="{Binding SelectedLine}">
+            <ListBox Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2" MinWidth="560" MinHeight="500" VerticalAlignment="Stretch" Margin="10,0,10,10" ItemsSource="{Binding FilteredDisplaySubList}" SelectedIndex="{Binding SelectedLine}" AllowDrop="True">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Padding" Value="5"/>
                     </Style>
                 </ListBox.ItemContainerStyle>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Drop">
+                        <command:EventToCommand Command="{Binding FileDropCommand, Mode=OneWay}" PassEventArgsToCommand="True"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </ListBox>
             <Grid Grid.Row="1" Grid.Column="2">
                 <Grid.Resources>

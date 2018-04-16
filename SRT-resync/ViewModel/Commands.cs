@@ -42,7 +42,7 @@ namespace SRT_resync
 
         public void Execute(object parameter)
         {
-            _subtitleViewModel.LoadSubtitle();
+            _subtitleViewModel.LoadFileFromDialog();
         }
 
         public event EventHandler CanExecuteChanged;

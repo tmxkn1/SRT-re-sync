@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
 using SubtitlesParser.Classes;
 
@@ -28,6 +29,7 @@ namespace SRT_resync
             ApplyCommand = new ApplyCommand(this);
             LoadFileCommand = new LoadFileCommand(this);
             SaveFileCommand = new SaveFileCommand(this);
+            FileDropCommand = new RelayCommand<DragEventArgs>(LoadDropedFile);
         }
 
         #region commands
@@ -36,6 +38,8 @@ namespace SRT_resync
         public ICommand LoadFileCommand { get; }
 
         public ICommand SaveFileCommand { get; }
+
+        public ICommand FileDropCommand { get; }
         #endregion
 
         #region can/is properties
@@ -141,7 +145,7 @@ namespace SRT_resync
         #endregion
 
         #region public methods
-        public void LoadSubtitle()
+        public void LoadFileFromDialog()
         {
             var dlg = new OpenFileDialog
             {
@@ -152,33 +156,43 @@ namespace SRT_resync
             if (dlg.ShowDialog() == false) return;
 
             SubtitleModel.IsSubLoaded = false;
-            SubtitleModel = new SubtitleModel {FileName = dlg.FileName};
+            SubtitleModel = new SubtitleModel { FileName = dlg.FileName };
             SubtitleModel.PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
             {
                 OnPropertyChanged(args.PropertyName == nameof(SubtitleModel.SubList)
                     ? nameof(FilteredDisplaySubList)
                     : args.PropertyName);
             };
+            LoadSubtitle();
+        }
 
-            try
+        public void LoadDropedFile(DragEventArgs e)
+        {
+            if (!(e.Data?.GetData(DataFormats.FileDrop) is string[] files) || files.Length == 0) return;
+            if (files.Length > 1)
             {
-                if (SubtitleModel.FileName == "") throw new Exception("No file has been specified.");
-
-                List<SubtitleItem> subList;
-                var parser = new SubtitlesParser.Classes.Parsers.SrtParser();
-                SubtitleModel.Encoding = GetEncoding(SubtitleModel.FileName);
-                using (var stream = File.OpenRead(SubtitleModel.FileName))
-                {
-                    subList = parser.ParseStream(stream, SubtitleModel.Encoding);
-                }
-
-                SubtitleModel.SubList = subList.Select(a => new SubtitleItemExt(a)).ToList();
-                SubtitleModel.IsSubLoaded = true;
+                MessageBox.Show("Can't load multiple file at the same time.", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
             }
-            catch (Exception ex)
+
+            var file = files[0];
+
+            if (!Path.GetExtension(file).ToLower().Equals(".srt"))
             {
-                MessageBox.Show(ex.Message, "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Not an SRT file.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
+
+            SubtitleModel.IsSubLoaded = false;
+            SubtitleModel = new SubtitleModel { FileName = file };
+            SubtitleModel.PropertyChanged += delegate (object sender, PropertyChangedEventArgs args)
+            {
+                OnPropertyChanged(args.PropertyName == nameof(SubtitleModel.SubList)
+                    ? nameof(FilteredDisplaySubList)
+                    : args.PropertyName);
+            };
+            LoadSubtitle();
         }
 
         public void ApplyAdjustment()
@@ -316,6 +330,29 @@ namespace SRT_resync
             if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
             if (bom[0] == 0xff && bom[1] == 0xfe && bom[2] == 0) return Encoding.UTF32;
             return Encoding.UTF8; // no bom utf8, since ascii wouldn't be used in srt.
+        }
+
+        private void LoadSubtitle()
+        {
+            try
+            {
+                if (SubtitleModel.FileName == "") throw new Exception("No file has been specified.");
+
+                List<SubtitleItem> subList;
+                var parser = new SubtitlesParser.Classes.Parsers.SrtParser();
+                SubtitleModel.Encoding = GetEncoding(SubtitleModel.FileName);
+                using (var stream = File.OpenRead(SubtitleModel.FileName))
+                {
+                    subList = parser.ParseStream(stream, SubtitleModel.Encoding);
+                }
+
+                SubtitleModel.SubList = subList.Select(a => new SubtitleItemExt(a)).ToList();
+                SubtitleModel.IsSubLoaded = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void BackupSubtitle()

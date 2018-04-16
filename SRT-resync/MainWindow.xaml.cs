@@ -1,5 +1,8 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 
 namespace SRT_resync
 {
@@ -28,6 +31,12 @@ namespace SRT_resync
         {
             var about = new About();
             about.ShowDialog();
+        }
+
+        public void FileDropCommand()
+        {
+            var c = "";
+            var d = "";
         }
     }
 }
