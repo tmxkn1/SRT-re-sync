@@ -166,9 +166,10 @@ namespace SRT_resync
 
                 List<SubtitleItem> subList;
                 var parser = new SubtitlesParser.Classes.Parsers.SrtParser();
+                SubtitleModel.Encoding = GetEncoding(SubtitleModel.FileName);
                 using (var stream = File.OpenRead(SubtitleModel.FileName))
                 {
-                    subList = parser.ParseStream(stream, Encoding.Unicode);
+                    subList = parser.ParseStream(stream, SubtitleModel.Encoding);
                 }
 
                 SubtitleModel.SubList = subList.Select(a => new SubtitleItemExt(a)).ToList();
@@ -205,7 +206,8 @@ namespace SRT_resync
                 if (IsBackupBeforeSave)
                     BackupSubtitle();
 
-                using (var stream = new StreamWriter(SubtitleModel.FileName))
+                var fs = new FileStream(SubtitleModel.FileName, FileMode.OpenOrCreate);
+                using (var stream = new StreamWriter(fs, SubtitleModel.Encoding))
                 {
                     for (var i = 0; i < SubtitleModel.SubList.Count; i++)
                     {
@@ -296,6 +298,24 @@ namespace SRT_resync
             }
 
             return null;
+        }
+
+        private static Encoding GetEncoding(string filename)
+        {
+            // Read the BOM
+            var bom = new byte[4];
+            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                file.Read(bom, 0, 4);
+            }
+
+            // Analyze the BOM
+            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
+            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
+            if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
+            if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
+            if (bom[0] == 0xff && bom[1] == 0xfe && bom[2] == 0) return Encoding.UTF32;
+            return Encoding.UTF8; // no bom utf8, since ascii wouldn't be used in srt.
         }
 
         private void BackupSubtitle()

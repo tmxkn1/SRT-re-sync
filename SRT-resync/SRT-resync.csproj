@@ -60,7 +60,7 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Commands.cs" />
+    <Compile Include="ViewModel\Commands.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel\SubtitleModel.cs" />
     <Compile Include="ViewModel\SubtitleViewModel.cs" />

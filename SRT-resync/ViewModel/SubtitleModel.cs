@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using SRT_resync.Annotations;
 using SubtitlesParser.Classes;
 
@@ -25,6 +26,8 @@ namespace SRT_resync
                 OnPropertyChanged();
             }
         }
+
+        public Encoding Encoding { get; set; }
 
         public bool IsSubLoaded
         {
