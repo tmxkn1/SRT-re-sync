@@ -11,19 +11,19 @@
             <TextBlock Text="SRT Re-sync" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18"/>
             <TextBlock Text="{Binding Path=(srtResync:MainWindow.Version)}" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </StackPanel>
-        <StackPanel Orientation="Vertical" Margin="30,20,30,0" HorizontalAlignment="Left" VerticalAlignment="Center">
-            <TextBlock Text="Copyright tmxkn1, 2018." HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBlock Text="MIT License" Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBlock Text="For license information, check LICENSE file at the open source website." FontSize="10" Margin="0,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <StackPanel Orientation="Vertical" Margin="30,20,30,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Copyright © Anthony Jiang 2018" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBlock Margin="0,5,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Hyperlink NavigateUri="https://github.com/tmxkn1/SRT-re-sync/blob/master/LICENSE"
+                           RequestNavigate="Hyperlink_RequestNavigate">
+                    MIT License
+                </Hyperlink>
+            </TextBlock>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="30,20,30,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Margin="30,20,30,0" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Open source at" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBlock Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/tmxkn1/D-OS-Save-Editor" RequestNavigate="Hyperlink_RequestNavigate">Github</Hyperlink></TextBlock>
+            <TextBlock Margin="5,0,0,0"><Hyperlink NavigateUri="https://github.com/tmxkn1/SRT-re-sync" RequestNavigate="Hyperlink_RequestNavigate">Github</Hyperlink></TextBlock>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="30,0,30,0" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Collapsed">
-            <TextBlock Text="Use and discussions:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBlock Margin="5,0,0,0"><Hyperlink NavigateUri="http://larian.com/forums/ubbthreads.php?ubb=showflat&amp;Number=644516#Post644516r" RequestNavigate="Hyperlink_RequestNavigate">Larian forum</Hyperlink></TextBlock>
-        </StackPanel>
-        <Button Content="OK" Width="70" Margin="0,20,20,20" HorizontalAlignment="Right" VerticalAlignment="Bottom" IsCancel="True"/>
+        <Button Content="OK" Width="70" Margin="20,20,20,20" HorizontalAlignment="Center" VerticalAlignment="Bottom" IsCancel="True"/>
     </StackPanel>
 </Window>
